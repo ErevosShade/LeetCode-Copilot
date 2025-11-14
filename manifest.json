@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "LeetCode AI Summary",
+  "version": "0.1.0",
+  "description": "Basic AI summary panel for LeetCode problems.",
+  "permissions": ["scripting", "activeTab"],
+  "host_permissions": [
+    "https://leetcode.com/*",
+    "https://leetcode.cn/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://leetcode.com/problems/*",
+        "https://leetcode.cn/problems/*"
+      ],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
