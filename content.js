@@ -13,6 +13,7 @@
   // Identify problem description with multiple fallbacks
   function getProblem() {
     const selectors = [
+      '[data-track-load="description_content"]', // NEW selector
       '[data-key="description-content"]',
       '.question-content__JfgR',
       '.content__u3I1',
