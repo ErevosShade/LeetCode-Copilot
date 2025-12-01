@@ -28,6 +28,20 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         const data = await response.json();
         console.log("Gemini raw:", data);
 
+        if (data?.error?.code === 503) {
+          console.warn("Model overloaded (503). Retry:", retry);
+
+          // Retry only once
+          if (!retry) {
+            await new Promise(res => setTimeout(res, 300)); // wait 0.3 sec
+            return await callGeminiAPI(prompt, true);
+          }
+
+          return {
+            ok: false,
+            text: "🚨 Gemini is overloaded right now.\nPlease try again in a moment."
+          };
+        }
         const candidate = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
         if (candidate) return { ok: true, text: candidate };
