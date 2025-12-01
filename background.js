@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       return;
     }
 
-    async function callGeminiAPI(prompt) {
+    async function callGeminiAPI(prompt, retry = false) {
       try {
         const response = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${gemini_key}`,
@@ -58,10 +58,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     }
 
     (async () => {
-
-      // -----------------------
-      // REPHRASE
-      // -----------------------
+      // rphrase      
       if (msg.type === "REPHRASE") {
         const prompt = `
 Rephrase the following LeetCode problem in simple, beginner-friendly English in 2 sentences.
@@ -80,8 +77,21 @@ ${text}
       // -----------------------
       if (msg.type === "CONSTRAINTS") {
         const prompt = `
-List ONLY the constraints in this LeetCode problem.
-Return short bullet points only.
+Extract ONLY the constraints from this LeetCode problem.
+Return short bullet points, no extra wording.
+
+Problem:
+${text}
+`;
+        const result = await callGeminiAPI(prompt);
+        sendResponse({ ok: result.ok, summary: result.text });
+        return;
+      }
+      // Edgecases
+      if (msg.type === "EDGECASES") {
+        const prompt = `
+List exactly 4 relevant edge cases for this LeetCode problem.
+Return bullet points only.
 
 Problem:
 ${text}
@@ -91,14 +101,34 @@ ${text}
         return;
       }
 
-      // -----------------------
-      // EDGE CASES
-      // -----------------------
-      if (msg.type === "EDGECASES") {
-        const prompt = `
-List 4 relevant edge cases for this LeetCode problem.
-Return bullet points only.
+      // Socratic hints 
 
+      if (msg.type === "HINTS") {
+        const prompt = `Give a Socratic-style guided hint for this LeetCode problem.
+❗ DO NOT reveal the solution.
+Ask 2–3 leading questions that help the student think.
+
+Problem:
+${text}
+`;
+
+        const result = await callGeminiAPI(prompt);
+        sendResponse({ ok: result.ok, summary: result.text });
+        return;
+      }
+
+      //Algorithm quick ref 
+
+      if(msg.type === "QUICKREF") {
+        const prompt = `
+Give a short algorithm/data-structure reference relevant to this LeetCode problem.
+Include:
+• What algorithm fits best
+• One-line explanation
+• Time Complexity
+• Space Complexity
+
+Keep it concise.
 Problem:
 ${text}
 `;

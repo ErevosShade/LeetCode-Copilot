@@ -19,10 +19,47 @@
         <button id="btn-edgecases" class="small-btn secondary">Suggest Edge Cases</button>
       </div>
 
+      <!-- WORKSPACE TOOLS -->
+      <button id="btn-workspace" class="section-toggle">📘 Workspace Tools</button>
+      <div id="workspace-panel" class="section-content">
+
+        <button id="btn-hints" class="small-btn">💡 Socratic Hint</button>
+        <button id="btn-quickref" class="small-btn secondary">📚 Algorithm Quick Reference</button>
+
+        <div class="scratch-title">📝 Scratchpad (auto-saves)</div>
+        <textarea id="scratchpad" placeholder="Write notes here…"></textarea>
+      </div>
+
       <div id="lc-output">Click a button to generate a concise rephrase.</div>
       <div class="lc-footer">Enter API key: Extensions → Details → Options</div>
+      <span style="opacity:0.7; font-size:12px;">Made by <b>Erevos</b></span>
+
     `;
     document.body.appendChild(box);
+
+    // Back button
+    const out = document.getElementById("lc-output");
+
+    const backBtn = document.createElement("button");
+    backBtn.id = "lc-back";
+    backBtn.textContent = "⬅ Back";
+    backBtn.className = "small-btn secondary";
+    backBtn.style.display = "none";   // hidden by default
+
+    // insert back button ABOVE output panel
+    out.parentNode.insertBefore(backBtn, out);
+
+    // clicking "Back" returns to main menu
+    backBtn.onclick = () => {
+      out.innerHTML = "Click a button to generate a concise rephrase.";
+      backBtn.style.display = "none";
+
+      // hide open sections
+      document.getElementById("problem-understanding-panel").style.display = "none";
+      document.getElementById("workspace-panel").style.display = "none";
+
+    };
+
 
     // bubble (minimised panel )
     const bubble = document.createElement("div");
@@ -30,7 +67,7 @@
     bubble.textContent = "💡";
     bubble.style.display = "none";
     document.body.appendChild(bubble);
-    
+
     // minimise to bubble handler
     document.getElementById("lc-collapse").onclick = () => {
       box.style.display = "none";
@@ -43,12 +80,16 @@
       box.style.display = "block";
     };
 
-    // expand/collapse the section
-    const toggleBtn = document.getElementById("btn-problem-understanding");
-    const panel = document.getElementById("problem-understanding-panel");
-    toggleBtn.onclick = () => {
-      panel.style.display = panel.style.display === "block" ? "none" : "block";
-    };
+    // universal toggle function
+    function setupToggle(buttonId, panelId) {
+      const btn = document.getElementById(buttonId);
+      const panel = document.getElementById(panelId);
+      btn.onclick = () => {
+        panel.style.display = panel.style.display === "block" ? "none" : "block";
+      };
+    }
+    setupToggle("btn-problem-understanding", "problem-understanding-panel");
+    setupToggle("btn-workspace", "workspace-panel");
 
     // Identify problem description with multiple fallbacks
     function getProblem() {
@@ -72,30 +113,14 @@
       if (!md) return "";
 
       let html = md;
-
-      // Remove LaTeX math wrappers
       html = html.replace(/\$/g, "");
-
-      // Replace common LaTeX operators
       html = html.replace(/\\le/g, "≤");
       html = html.replace(/\\ge/g, "≥");
-
-      // Replace ^ exponent with unicode superscript
       html = html.replace(/10\^4/g, "10⁴");
-
-      // Remove \text{...}
       html = html.replace(/\\text\{([^}]+)\}/g, "$1");
-
-      // Remove any leftover backslashes
       html = html.replace(/\\/g, "");
-
-      // Convert **bold** markdown
       html = html.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
-
-      // Convert bullet points properly
       html = html.replace(/^\s*\*\s/gm, "• ");
-
-      // Convert newlines → <br>
       html = html.replace(/\n/g, "<br>");
 
       return html;
@@ -103,58 +128,60 @@
 
     function showOutput(text) {
       const out = document.getElementById("lc-output");
+      const backBtn = document.getElementById("lc-back");
+
       out.innerHTML = mdToHtml(text);
+      backBtn.style.display = "block";
     }
 
+    //scratchpad auto-save
+    const scratch = document.getElementById("scratchpad");
+    const parts = location.pathname.split("/");
+    const problemId = parts.includes("problems") ? parts[parts.indexOf("problems") + 1] : "global";
+
+    chrome.storage.local.get(["scratch_" + problemId], (res) => {
+      scratch.value = res["scratch_" + problemId] || "";
+    });
+
+    scratch.addEventListener("input", () => {
+      chrome.storage.local.set({
+        ["scratch_" + problemId]: scratch.value
+      });
+    });
+
+
     // Button handlers: send different message types to background
-    document.getElementById("btn-rephrase").onclick = () => {
+    function send(type, loadingText) {
       const text = getProblem();
       if (!text) {
-        showOutput("Could not find problem text on this page.");
+        showOutput("Could not find problem description.");
         return;
       }
-      showOutput("Generating rephrase...");
-      chrome.runtime.sendMessage({ type: "REPHRASE", text }, (res) => {
-        if (res?.ok) {
-          showOutput(res.summary);
-        } else {
-          showOutput("Error: " + (res?.summary || "No response"));
-        }
-      });
-    };
+      showOutput(loadingText);
 
-    document.getElementById("btn-constraints").onclick = () => {
-      const text = getProblem();
-      if (!text) {
-        showOutput("Could not find problem text on this page.");
-        return;
-      }
-      showOutput("Extracting constraints...");
-      chrome.runtime.sendMessage({ type: "CONSTRAINTS", text }, (res) => {
-        if (res?.ok) {
-          showOutput(res.summary);
-        } else {
-          showOutput("Error: " + (res?.summary || "No response"));
-        }
+      chrome.runtime.sendMessage({ type, text }, (res) => {
+        if (res?.ok) showOutput(res.summary);
+        else showOutput("Error: " + (res?.summary || "No response"));
       });
-    };
+    }
 
-    document.getElementById("btn-edgecases").onclick = () => {
-      const text = getProblem();
-      if (!text) {
-        showOutput("Could not find problem text on this page.");
-        return;
-      }
-      showOutput("Suggesting edge cases...");
-      chrome.runtime.sendMessage({ type: "EDGECASES", text }, (res) => {
-        if (res?.ok) {
-          showOutput(res.summary);
-        } else {
-          showOutput("Error: " + (res?.summary || "No response"));
-        }
-      });
-    };
+    document.getElementById("btn-rephrase").onclick = () =>
+      send("REPHRASE", "Rephrasing…");
+
+    document.getElementById("btn-constraints").onclick = () =>
+      send("CONSTRAINTS", "Extracting constraints…");
+
+    document.getElementById("btn-edgecases").onclick = () =>
+      send("EDGECASES", "Finding edge cases…");
+
+    document.getElementById("btn-hints").onclick = () =>
+      send("HINTS", "Generating guided hint…");
+
+    document.getElementById("btn-quickref").onclick = () =>
+      send("QUICKREF", "Loading algorithm reference…");
   }
+
+
   //store last url
   let lastUrl = location.href;
 

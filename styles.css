@@ -120,3 +120,20 @@
 #lc-bubble:hover {
   transform: scale(1.1);
 }
+
+#scratchpad {
+  width: 100%;
+  height: 120px;
+  padding: 8px;
+  font-size: 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  resize: vertical;
+  background: #ffffff;
+}
+
+.scratch-title {
+  font-weight: 600;
+  margin-top: 6px;
+  font-size: 13px;
+}
