@@ -24,10 +24,23 @@
     `;
     document.body.appendChild(box);
 
-    // collapse handler
+    // bubble (minimised panel )
+    const bubble = document.createElement("div");
+    bubble.id = "lc-bubble";
+    bubble.textContent = "💡";
+    bubble.style.display = "none";
+    document.body.appendChild(bubble);
+    
+    // minimise to bubble handler
     document.getElementById("lc-collapse").onclick = () => {
-      const box = document.getElementById("lc-ai-box");
       box.style.display = "none";
+      bubble.style.display = "flex";  // show small icon
+    };
+
+    //restore planel from bubble
+    bubble.onclick = () => {
+      bubble.style.display = "none";
+      box.style.display = "block";
     };
 
     // expand/collapse the section
@@ -57,12 +70,34 @@
     // Convert minimal Markdown -> HTML (bold only, safe)
     function mdToHtml(md) {
       if (!md) return "";
-      // convert **bold** to <b>
-      let html = md.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
-      // replace headings like ### and lists lightly to keep it concise:
-      html = html.replace(/^### (.*$)/gim, "<h3>$1</h3>");
-      // line breaks -> <br>
+
+      let html = md;
+
+      // Remove LaTeX math wrappers
+      html = html.replace(/\$/g, "");
+
+      // Replace common LaTeX operators
+      html = html.replace(/\\le/g, "≤");
+      html = html.replace(/\\ge/g, "≥");
+
+      // Replace ^ exponent with unicode superscript
+      html = html.replace(/10\^4/g, "10⁴");
+
+      // Remove \text{...}
+      html = html.replace(/\\text\{([^}]+)\}/g, "$1");
+
+      // Remove any leftover backslashes
+      html = html.replace(/\\/g, "");
+
+      // Convert **bold** markdown
+      html = html.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+
+      // Convert bullet points properly
+      html = html.replace(/^\s*\*\s/gm, "• ");
+
+      // Convert newlines → <br>
       html = html.replace(/\n/g, "<br>");
+
       return html;
     }
 
