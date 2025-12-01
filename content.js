@@ -36,7 +36,8 @@
         { type: "AI_SUMMARY", text },
         (res) => {
           if (res?.ok) {
-            document.getElementById("lc-output").innerText = res.summary;
+            res.summary = res.summary.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");  
+            document.getElementById("lc-output").innerHTML = res.summary;
           } else {
             document.getElementById("lc-output").innerText =
               "Error contacting background.";
