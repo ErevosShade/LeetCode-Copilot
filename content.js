@@ -6,11 +6,36 @@
     const box = document.createElement("div");
     box.id = "lc-ai-box";
     box.innerHTML = `
-    <div class="lc-header">AI Summary</div>
-    <button id="lc-run">Summarize</button>
-    <div id="lc-output">Click summarize to generate.</div>
-  `;
+      <div class="lc-header">
+        <div class="lc-title">LeetCode Copilot</div>
+        <button id="lc-collapse" title="Collapse">✕</button>
+      </div>
+
+      <button id="btn-problem-understanding" class="section-toggle">🧠 Problem Understanding</button>
+
+      <div id="problem-understanding-panel" class="section-content">
+        <button id="btn-rephrase" class="small-btn">Rephrase Problem</button>
+        <button id="btn-constraints" class="small-btn secondary">Extract Constraints</button>
+        <button id="btn-edgecases" class="small-btn secondary">Suggest Edge Cases</button>
+      </div>
+
+      <div id="lc-output">Click a button to generate a concise rephrase.</div>
+      <div class="lc-footer">Enter API key: Extensions → Details → Options</div>
+    `;
     document.body.appendChild(box);
+
+    // collapse handler
+    document.getElementById("lc-collapse").onclick = () => {
+      const box = document.getElementById("lc-ai-box");
+      box.style.display = "none";
+    };
+
+    // expand/collapse the section
+    const toggleBtn = document.getElementById("btn-problem-understanding");
+    const panel = document.getElementById("problem-understanding-panel");
+    toggleBtn.onclick = () => {
+      panel.style.display = panel.style.display === "block" ? "none" : "block";
+    };
 
     // Identify problem description with multiple fallbacks
     function getProblem() {
@@ -29,20 +54,70 @@
       return "";
     }
 
-    document.getElementById("lc-run").onclick = () => {
-      const text = getProblem();
+    // Convert minimal Markdown -> HTML (bold only, safe)
+    function mdToHtml(md) {
+      if (!md) return "";
+      // convert **bold** to <b>
+      let html = md.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+      // replace headings like ### and lists lightly to keep it concise:
+      html = html.replace(/^### (.*$)/gim, "<h3>$1</h3>");
+      // line breaks -> <br>
+      html = html.replace(/\n/g, "<br>");
+      return html;
+    }
 
-      chrome.runtime.sendMessage(
-        { type: "AI_SUMMARY", text },
-        (res) => {
-          if (res?.ok) {
-            res.summary = res.summary.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");  
-            document.getElementById("lc-output").innerHTML = res.summary;
-          } else {
-            document.getElementById("lc-output").innerText =
-              "Error contacting background.";
-          }
-        });
+    function showOutput(text) {
+      const out = document.getElementById("lc-output");
+      out.innerHTML = mdToHtml(text);
+    }
+
+    // Button handlers: send different message types to background
+    document.getElementById("btn-rephrase").onclick = () => {
+      const text = getProblem();
+      if (!text) {
+        showOutput("Could not find problem text on this page.");
+        return;
+      }
+      showOutput("Generating rephrase...");
+      chrome.runtime.sendMessage({ type: "REPHRASE", text }, (res) => {
+        if (res?.ok) {
+          showOutput(res.summary);
+        } else {
+          showOutput("Error: " + (res?.summary || "No response"));
+        }
+      });
+    };
+
+    document.getElementById("btn-constraints").onclick = () => {
+      const text = getProblem();
+      if (!text) {
+        showOutput("Could not find problem text on this page.");
+        return;
+      }
+      showOutput("Extracting constraints...");
+      chrome.runtime.sendMessage({ type: "CONSTRAINTS", text }, (res) => {
+        if (res?.ok) {
+          showOutput(res.summary);
+        } else {
+          showOutput("Error: " + (res?.summary || "No response"));
+        }
+      });
+    };
+
+    document.getElementById("btn-edgecases").onclick = () => {
+      const text = getProblem();
+      if (!text) {
+        showOutput("Could not find problem text on this page.");
+        return;
+      }
+      showOutput("Suggesting edge cases...");
+      chrome.runtime.sendMessage({ type: "EDGECASES", text }, (res) => {
+        if (res?.ok) {
+          showOutput(res.summary);
+        } else {
+          showOutput("Error: " + (res?.summary || "No response"));
+        }
+      });
     };
   }
   //store last url

@@ -1,42 +1,103 @@
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if (msg.type === "AI_SUMMARY") {
-    // Mock AI — replace this with real API later
-    const text = msg.text || "";
+  console.log("MSG:", msg?.type);
 
-    chrome.storage.sync.get(["gemini_key"], async ({ gemini_key }) => {
-      if (!gemini_key) {
-        sendResponse({
-          ok: false,
-          summary: "❗ No API key set. Go to extension Options to add your Gemini key."
-        });
-        return;
-      }
+  const text = msg.text || "";
 
+  chrome.storage.sync.get(["gemini_key"], async ({ gemini_key }) => {
+    if (!gemini_key) {
+      sendResponse({
+        ok: false,
+        summary: "❗ No API key set. Go to extension Options to add your Gemini key."
+      });
+      return;
+    }
 
-    try {
-
+    async function callGeminiAPI(prompt) {
+      try {
         const response = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${gemini_key}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              contents: [{ parts: [{ text: `Summarize this LeetCode problem:\n${text}` }] }]
+              contents: [{ parts: [{ text: prompt }] }]
             })
           }
         );
 
         const data = await response.json();
-        const summary =
-          data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-          "No summary returned.";
+        console.log("Gemini raw:", data);
 
-        sendResponse({ ok: true, summary });
+        const candidate = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (candidate) return { ok: true, text: candidate };
+
+        return {
+          ok: false,
+          text: "No summary returned.\n\n" + JSON.stringify(data, null, 2)
+        };
+
       } catch (err) {
-        sendResponse({ ok: false, summary: "Error: " + err.message });
+        console.error("Fetch error:", err);
+        return { ok: false, text: "Error: " + err.message };
       }
-    });
+    }
 
-    return true; // Keep async
-  }
+    (async () => {
+
+      // -----------------------
+      // REPHRASE
+      // -----------------------
+      if (msg.type === "REPHRASE") {
+        const prompt = `
+Rephrase the following LeetCode problem in simple, beginner-friendly English in 2 sentences.
+Do NOT include approach, steps, complexity, or edge cases.
+
+Problem:
+${text}
+`;
+        const result = await callGeminiAPI(prompt);
+        sendResponse({ ok: result.ok, summary: result.text });
+        return;
+      }
+
+      // -----------------------
+      // CONSTRAINTS
+      // -----------------------
+      if (msg.type === "CONSTRAINTS") {
+        const prompt = `
+List ONLY the constraints in this LeetCode problem.
+Return short bullet points only.
+
+Problem:
+${text}
+`;
+        const result = await callGeminiAPI(prompt);
+        sendResponse({ ok: result.ok, summary: result.text });
+        return;
+      }
+
+      // -----------------------
+      // EDGE CASES
+      // -----------------------
+      if (msg.type === "EDGECASES") {
+        const prompt = `
+List 4 relevant edge cases for this LeetCode problem.
+Return bullet points only.
+
+Problem:
+${text}
+`;
+        const result = await callGeminiAPI(prompt);
+        sendResponse({ ok: result.ok, summary: result.text });
+        return;
+      }
+
+      // Unknown message type
+      sendResponse({ ok: false, summary: "Unknown message type" });
+
+    })();
+  });
+
+  return true; // keep channel open for async response
 });
