@@ -22,12 +22,9 @@
       <!-- WORKSPACE TOOLS -->
       <button id="btn-workspace" class="section-toggle">📘 Workspace Tools</button>
       <div id="workspace-panel" class="section-content">
-
         <button id="btn-hints" class="small-btn">💡 Socratic Hint</button>
+        <button id="btn-open-scratch" class="small-btn secondary">📝 Open Scratchpad</button>
         <button id="btn-quickref" class="small-btn secondary">📚 Algorithm Quick Reference</button>
-
-        <div class="scratch-title">📝 Scratchpad (auto-saves)</div>
-        <textarea id="scratchpad" placeholder="Write notes here…"></textarea>
       </div>
 
       <div id="lc-output">Click a button to generate a concise rephrase.</div>
@@ -36,6 +33,38 @@
 
     `;
     document.body.appendChild(box);
+
+    // ---- Floating Scratchpad ----
+    const scratchFloat = document.createElement("div");
+    scratchFloat.id = "scratch-float";
+    scratchFloat.classList.add("hidden");   // keep hidden by default
+    scratchFloat.style.top = "140px";       // set fixed position
+    scratchFloat.style.left = "calc(100vw - 680px)";
+    scratchFloat.innerHTML = `
+      <div id="scratch-header" class="scratch-header">
+        📝 Scratchpad
+        <button id="scratch-close">✕</button>
+      </div>
+    <textarea id="scratchpad" placeholder="Write notes here…"></textarea>
+    `;
+    document.body.appendChild(scratchFloat);
+
+    // Scratchpad auto-save
+    const scratch = document.getElementById("scratchpad");
+    const parts = location.pathname.split("/");
+    const problemId = parts.includes("problems")
+      ? parts[parts.indexOf("problems") + 1]
+      : "global";
+
+    chrome.storage.local.get(["scratch_" + problemId], (res) => {
+      scratch.value = res["scratch_" + problemId] || "";
+    });
+
+    scratch.addEventListener("input", () => {
+      chrome.storage.local.set({
+        ["scratch_" + problemId]: scratch.value
+      });
+    });
 
     // Back button
     const out = document.getElementById("lc-output");
@@ -91,6 +120,40 @@
     setupToggle("btn-problem-understanding", "problem-understanding-panel");
     setupToggle("btn-workspace", "workspace-panel");
 
+    // Scratchpad open / close handlers
+    const openScratch = document.getElementById("btn-open-scratch");
+    const scratchBox = document.getElementById("scratch-float");
+    const closeScratch = document.getElementById("scratch-close");
+
+    openScratch.onclick = () => {
+      scratchBox.classList.toggle("hidden");
+    };
+
+    closeScratch.onclick = () => {
+      scratchBox.classList.add("hidden");
+    };
+
+    // Drag logic for scratchpad
+    const header = document.getElementById("scratch-header");
+    let isDragging = false, offsetX = 0, offsetY = 0;
+
+    header.onmousedown = (e) => {
+      isDragging = true;
+      offsetX = e.clientX - scratchBox.offsetLeft;
+      offsetY = e.clientY - scratchBox.offsetTop;
+    };
+
+    document.onmousemove = (e) => {
+      if (!isDragging) return;
+      scratchBox.style.left = e.clientX - offsetX + "px";
+      scratchBox.style.top = e.clientY - offsetY + "px";
+    };
+
+    document.onmouseup = () => {
+      isDragging = false;
+    };
+
+
     // Identify problem description with multiple fallbacks
     function getProblem() {
       const selectors = [
@@ -133,21 +196,6 @@
       out.innerHTML = mdToHtml(text);
       backBtn.style.display = "block";
     }
-
-    //scratchpad auto-save
-    const scratch = document.getElementById("scratchpad");
-    const parts = location.pathname.split("/");
-    const problemId = parts.includes("problems") ? parts[parts.indexOf("problems") + 1] : "global";
-
-    chrome.storage.local.get(["scratch_" + problemId], (res) => {
-      scratch.value = res["scratch_" + problemId] || "";
-    });
-
-    scratch.addEventListener("input", () => {
-      chrome.storage.local.set({
-        ["scratch_" + problemId]: scratch.value
-      });
-    });
 
 
     // Button handlers: send different message types to background

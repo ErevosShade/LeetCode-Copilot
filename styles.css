@@ -121,19 +121,40 @@
   transform: scale(1.1);
 }
 
-#scratchpad {
-  width: 100%;
-  height: 120px;
-  padding: 8px;
-  font-size: 13px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  resize: vertical;
+/* Floating Scratchpad */
+#scratch-float {
+  position: fixed;
+  top: 140px;
+  right: 380px; /* left of copilot */
+  width: 280px;
+  height: 240px;
   background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  z-index: 99999;
 }
 
-.scratch-title {
+.scratch-header {
+  cursor: move;
+  padding: 8px;
   font-weight: 600;
-  margin-top: 6px;
+  background: #f3f4f6;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#scratchpad {
+  flex: 1;
+  border: none;
+  padding: 8px;
   font-size: 13px;
+  resize: none;
+}
+
+.hidden {
+  display: none;
 }
