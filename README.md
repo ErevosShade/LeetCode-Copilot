@@ -1,43 +1,127 @@
-# LeetCode AI Summary (Chrome Extension)
+🚀 LeetCode Copilot — Chrome Extension
+An AI-powered productivity tool for LeetCode, built by Erevos
 
-This is a small Chrome extension that adds a little panel on LeetCode problem pages.  
-Right now it can grab the problem description and generate a quick “AI summary” (it’s a mock for now).  
-Mostly made this so I can build more features on top of it later.
+A lightweight Chrome extension that enhances your LeetCode workflow using Gemini AI.
+Understand problems faster, extract constraints, generate hints, save notes, and access algorithm references — all directly beside the problem.
 
-## How it works
-- The extension injects a tiny floating UI box on the right side of any LeetCode problem page.
-- When you click the **Summarize** button, it grabs the problem description from the page.
-- It sends that text to the background script.
-- The background script returns a mock summary for now (easy to swap out for real OpenAI/Gemini/etc).
+✨ Features
+🤖 AI Problem Understanding
 
-Honestly nothing fancy yet, just a basic working setup.
+Rephrase complex LeetCode problems into simple English
 
-## Install (local)
-1. Clone or download this repo.
-2. Go to `chrome://extensions`
-3. Turn on Developer Mode.
-4. Click **Load unpacked** and pick the project folder.
+Extract constraints directly from the problem description
 
-Then visit any LeetCode problem and the little panel should show up on the right.
+Suggest meaningful edge cases
 
-## File overview
-- `manifest.json` — tells Chrome what the extension is allowed to do.
-- `content.js` — runs on LeetCode pages; injects the UI and talks to background.
-- `background.js` — handles the summary request (mock at the moment).
-- `styles.css` — styles for the panel.
+Markdown-like formatting is converted into clean UI-friendly HTML
 
-## Things I want to add later
-Just dropping ideas here so I don’t forget:
-- real AI integration (OpenAI / Gemini / Claude, or even local models)
-- edge case generator
-- constraint extractor
-- example inputs
-- hint mode / coaching mode
-- small scratchpad editor inside the panel
-- maybe a visualizer for pointer problems
+📘 Workspace Tools
+📝 Scratchpad (Auto-Save per Problem)
 
-If you want any of these, feel free to fork or open an issue.
+Persistent notes for every problem
 
-## License
-Probably MIT or something. Haven’t decided.  
-For now: do whatever you want with it.
+Automatically saved locally using chrome.storage.local
+
+Notes reload instantly when revisiting the same problem
+
+💡 Socratic Hint System
+
+Get step-by-step, interactive hints without revealing the full solution
+
+Designed to teach reasoning, not spoon-feed answers
+
+📚 Algorithm Quick Reference
+
+One-click lookup:
+
+Two pointers
+
+DP patterns
+
+Sliding window
+
+Graph/Tree templates
+
+Search strategies
+
+All powered through Gemini prompts
+
+🎨 UI/UX Features
+
+Smooth collapsing animations
+
+“💡” bubble mode when minimized
+
+Back button to return to the main menu
+
+Clean modern panel styled to match LeetCode’s UI
+
+Your name Erevos displayed as the extension’s maker
+
+🔧 Installation (Developer Mode)
+
+Download or clone this repository:
+
+git clone https://github.com/<your-username>/leetcode-copilot
+
+
+Open chrome://extensions/
+
+Enable Developer Mode
+
+Click Load Unpacked
+
+Select the project folder
+
+Open the extension Options page and paste your Gemini API Key
+
+🧠 How It Works
+On every LeetCode problem page:
+
+The extension injects a floating panel
+
+Detects problem description using multiple DOM selectors
+
+Converts AI outputs → clean HTML (safe, sanitized)
+
+All actions communicate with background.js using chrome.runtime.sendMessage
+
+Background Tasks
+
+background.js handles:
+
+Fetching from Gemini API
+
+Retry logic + failure-friendly messaging
+
+Returning summaries, hints, algorithm notes, etc.
+
+📁 Project Structure
+📦 leetcode-copilot
+ ┣ 📜 manifest.json
+ ┣ 📜 background.js
+ ┣ 📜 content.js
+ ┣ 📜 styles.css
+ ┣ 📜 options.html
+ ┣ 📜 options.js
+ ┗ 📜 README.md
+
+🖥️ Screenshots (Replace With Your Images)
+Main Panel
+
+Bubble Mode
+
+Scratchpad
+
+🔐 API Key Storage
+
+Your Gemini key stays local
+
+Never exposed publicly
+
+Stored only in chrome.storage.sync
+
+👤 Author
+Made with ❤️ by Erevos
+
+If you like this extension, ⭐ the repo or contribute!
