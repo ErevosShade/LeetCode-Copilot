@@ -29,7 +29,8 @@
 
       <div id="lc-output">Click a button to generate a concise rephrase.</div>
       <div class="lc-footer">Enter API key: Extensions → Details → Options</div>
-      <span style="opacity:0.7; font-size:12px;">Made by <b>Erevos</b></span>
+      <div class="lc-footer-brand"> Made by <b>Erevos</b> </div>
+
 
     `;
     document.body.appendChild(box);
@@ -86,6 +87,7 @@
       // hide open sections
       document.getElementById("problem-understanding-panel").style.display = "none";
       document.getElementById("workspace-panel").style.display = "none";
+      document.getElementById("lc-ai-box").classList.remove("expanded");  // collapse panel
 
     };
 
@@ -99,22 +101,77 @@
 
     // minimise to bubble handler
     document.getElementById("lc-collapse").onclick = () => {
-      box.style.display = "none";
+      resetPanelState();
+      box.classList.add("hidden-panel");
+      bubble.style.display = "flex";
+
       bubble.style.display = "flex";  // show small icon
     };
 
     //restore planel from bubble
     bubble.onclick = () => {
+      resetPanelState();
       bubble.style.display = "none";
-      box.style.display = "block";
+      bubble.style.display = "none";
+box.classList.remove("hidden-panel");
+
     };
+
+    function resetPanelState() {
+      const box = document.getElementById("lc-ai-box");
+
+      // 1️⃣ Reset panel expansion
+      box.classList.remove("expanded");
+
+      // 2️⃣ Close all expandable sections
+      const sections = [
+        "problem-understanding-panel",
+        "workspace-panel",
+      ];
+
+      sections.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.remove("show");
+          el.style.display = "none"; // important for your current CSS
+        }
+      });
+
+      // 3️⃣ Reset output text
+      const out = document.getElementById("lc-output");
+      if (out) {
+        out.innerHTML = "Click a button to generate a concise rephrase.";
+      }
+
+      // 4️⃣ Hide back button
+      const backBtn = document.getElementById("lc-back");
+      if (backBtn) {
+        backBtn.style.display = "none";
+      }
+    }
 
     // universal toggle function
     function setupToggle(buttonId, panelId) {
       const btn = document.getElementById(buttonId);
       const panel = document.getElementById(panelId);
       btn.onclick = () => {
-        panel.style.display = panel.style.display === "block" ? "none" : "block";
+        const isOpen = panel.classList.contains("show");
+
+        if (isOpen) {
+          panel.classList.remove("show");
+        } else {
+          panel.classList.add("show");
+          box.classList.add("expanded");   // 👈 force panel growth
+        }
+
+        // shrink only if nothing is open
+        const anyOpen =
+          document.getElementById("problem-understanding-panel")?.classList.contains("show") ||
+          document.getElementById("workspace-panel")?.classList.contains("show");
+
+        if (!anyOpen) {
+          box.classList.remove("expanded");
+        }
       };
     }
     setupToggle("btn-problem-understanding", "problem-understanding-panel");
@@ -192,9 +249,14 @@
     function showOutput(text) {
       const out = document.getElementById("lc-output");
       const backBtn = document.getElementById("lc-back");
+      const panel = document.getElementById("lc-ai-box");
 
       out.innerHTML = mdToHtml(text);
       backBtn.style.display = "block";
+
+      if (!text.endsWith("…")) {
+        panel.classList.add("expanded");
+      }
     }
 
 
