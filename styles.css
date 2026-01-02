@@ -54,9 +54,8 @@
 .lc-footer-brand {
   font-size: 12px;
   opacity: 0.7;
-  text-align: center;
+  text-align: left;
   margin-top: auto;
-  /* 🔑 pins it to bottom */
 }
 
 /* Section toggle button */
