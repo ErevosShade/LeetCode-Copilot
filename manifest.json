@@ -1,8 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "LeetCode AI Summary",
-  "version": "0.1.0",
-  "description": "Basic AI summary panel for LeetCode problems.",
+  "name": "LeetCode Copilot",
+  "version": "0.3.0",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "description": "An AI-powered Chrome extension to help understand LeetCode problems with rephrasing, constraints, hints, and a scratchpad.",
   "options_page": "options.html",
   "permissions": ["storage","scripting", "activeTab"],
   "host_permissions": [

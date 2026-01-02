@@ -32,13 +32,19 @@
         <button id="btn-quickref" class="small-btn secondary">📚 Algorithm Quick Reference</button>
       </div>
 
-      <div id="lc-output">Select a tool for instant insights. ⚡</div>
+      <div id="lc-output">Choose a tool to break down the problem faster⚡</div>
       <div class="lc-footer">Enter API key: Extensions → Details → Options</div>
-      <div class="lc-footer-brand"> Made by <b>Erevos</b> </div>
+      <div class="lc-footer-brand" id="lc-version"></div>
 
 
     `;
     document.body.appendChild(box);
+
+    const versionEl = document.getElementById("lc-version");
+    if (versionEl) {
+      const manifest = chrome.runtime.getManifest();
+      versionEl.textContent = `v${manifest.version} • Beta`;
+    }
 
     // Make panel draggable
     function makeDraggable(box, handle) {
@@ -168,26 +174,25 @@
       btn.onclick = () => {
         const isOpen = panel.classList.contains("show");
 
-        if (isOpen) {
-          panel.classList.remove("show");
-        } else {
+        // close all panels
+        document.querySelectorAll(".section-content").forEach(p =>
+          p.classList.remove("show")
+        );
+        document.querySelectorAll(".section-toggle").forEach(b =>
+          b.classList.remove("active")
+        );
+
+        if (!isOpen) {
           panel.classList.add("show");
-          box.classList.add("expanded");   // 👈 force panel growth
-        }
-
-        // shrink only if nothing is open
-        const anyOpen =
-          document.getElementById("problem-understanding-panel")?.classList.contains("show") ||
-          document.getElementById("workspace-panel")?.classList.contains("show");
-
-        if (!anyOpen) {
+          btn.classList.add("active");
+          box.classList.add("expanded");
+        } else {
           box.classList.remove("expanded");
         }
       };
     }
     setupToggle("btn-problem-understanding", "problem-understanding-panel");
     setupToggle("btn-workspace", "workspace-panel");
-
 
 
     // Drag logic for scratchpad
@@ -203,8 +208,6 @@
     const panel = document.getElementById("lc-ai-box");
     const panelHeader = panel.querySelector(".lc-header");
     makeDraggable(panel, panelHeader);
-
-
 
 
     // Identify problem description with multiple fallbacks
