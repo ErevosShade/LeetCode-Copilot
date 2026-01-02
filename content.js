@@ -34,6 +34,7 @@
 
     `;
     document.body.appendChild(box);
+    document.getElementById("lc-output").classList.add("hidden");
 
     // Make panel draggable
     function makeDraggable(box, handle) {
@@ -60,6 +61,7 @@
 
     // Make box openable
     function makeOpenable(trigger, box) {
+      if (!trigger || !box) return; //Null checking
       trigger.addEventListener("click", () => {
         box.classList.remove("hidden");
       });
@@ -67,6 +69,7 @@
 
     // Make box closable
     function makeClosable(box, closeBtn) {
+      if (!box || !closeBtn) return;
       closeBtn.addEventListener("click", () => {
         box.classList.add("hidden");
       });
@@ -125,35 +128,11 @@
       <div id="ai-output-content">Waiting for AI response...</div>
     `;
     document.body.appendChild(aiFloat);
-
     makeClosable(aiFloat, document.getElementById("ai-close")); // close button
 
-    // Back button
-    const out = document.getElementById("lc-output");
 
-    const backBtn = document.createElement("button");
-    backBtn.id = "lc-back";
-    backBtn.textContent = "⬅ Back";
-    backBtn.className = "small-btn secondary";
-    backBtn.style.display = "none";   // hidden by default
-
-    // insert back button ABOVE output panel
-    out.parentNode.insertBefore(backBtn, out);
-
-    // clicking "Back" returns to main menu
-    backBtn.onclick = () => {
-      out.innerHTML = "Click a button to generate a concise rephrase.";
-      backBtn.style.display = "none";
-
-      // hide open sections
-      document.getElementById("problem-understanding-panel").classList.remove("show");
-      document.getElementById("workspace-panel").classList.remove("show");
-      document.getElementById("lc-ai-box").classList.remove("expanded");  // collapse panel
-
-    };
-
-
-    // bubble (minimised panel )
+    // Minimise / Restore Logic
+    // bubble
     const bubble = document.createElement("div");
     bubble.id = "lc-bubble";
     bubble.textContent = "💡";
@@ -200,7 +179,7 @@
     setupToggle("btn-problem-understanding", "problem-understanding-panel");
     setupToggle("btn-workspace", "workspace-panel");
 
- 
+
 
     // Drag logic for scratchpad
     const scratchHeader = scratchBox.querySelector(".scratch-header");
