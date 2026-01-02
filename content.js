@@ -58,6 +58,20 @@
       });
     }
 
+    // Make box openable
+    function makeOpenable(trigger, box) {
+      trigger.addEventListener("click", () => {
+        box.classList.remove("hidden");
+      });
+    }
+
+    // Make box closable
+    function makeClosable(box, closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        box.classList.add("hidden");
+      });
+    }
+
     // ---- Floating Scratchpad ----
     const scratchFloat = document.createElement("div");
     scratchFloat.id = "scratch-float";
@@ -90,6 +104,14 @@
       });
     });
 
+    // Scratchpad open / close handlers
+    const openScratch = document.getElementById("btn-open-scratch");
+    const scratchBox = document.getElementById("scratch-float");
+    const closeScratch = document.getElementById("scratch-close");
+
+    makeOpenable(openScratch, scratchBox);
+    makeClosable(scratchBox, closeScratch);
+
     // ---- Floating AI Output Box ----
     const aiFloat = document.createElement("div");
     aiFloat.id = "ai-output-float";
@@ -104,10 +126,7 @@
     `;
     document.body.appendChild(aiFloat);
 
-    // Floating AI box close handler
-    document.getElementById("ai-close").onclick = () => {
-      document.getElementById("ai-output-float").classList.add("hidden");
-    };
+    makeClosable(aiFloat, document.getElementById("ai-close")); // close button
 
     // Back button
     const out = document.getElementById("lc-output");
@@ -181,18 +200,7 @@
     setupToggle("btn-problem-understanding", "problem-understanding-panel");
     setupToggle("btn-workspace", "workspace-panel");
 
-    // Scratchpad open / close handlers
-    const openScratch = document.getElementById("btn-open-scratch");
-    const scratchBox = document.getElementById("scratch-float");
-    const closeScratch = document.getElementById("scratch-close");
-
-    openScratch.onclick = () => {
-      scratchBox.classList.toggle("hidden");
-    };
-
-    closeScratch.onclick = () => {
-      scratchBox.classList.add("hidden");
-    };
+ 
 
     // Drag logic for scratchpad
     const scratchHeader = scratchBox.querySelector(".scratch-header");
