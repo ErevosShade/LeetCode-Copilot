@@ -81,6 +81,11 @@
     `;
     document.body.appendChild(aiFloat);
 
+    // Floating AI box close handler
+    document.getElementById("ai-close").onclick = () => {
+      document.getElementById("ai-output-float").classList.add("hidden");
+    };
+
     // Back button
     const out = document.getElementById("lc-output");
 
@@ -223,17 +228,17 @@
     }
 
     function showOutput(text) {
-      const out = document.getElementById("lc-output");
-      const backBtn = document.getElementById("lc-back");
+      const aiBox = document.getElementById("ai-output-float");
+      const aiContent = document.getElementById("ai-output-content");
       const panel = document.getElementById("lc-ai-box");
 
-      out.innerHTML = mdToHtml(text);
-      backBtn.style.display = "block";
+      aiContent.innerHTML = mdToHtml(text);
+      aiBox.classList.remove("hidden"); // show floating AI box
 
-      if (!text.endsWith("…")) {
-        panel.classList.add("expanded");
-      }
+      // keep main panel clean
+      panel.classList.remove("expanded");
     }
+
 
 
     // Button handlers: send different message types to background
