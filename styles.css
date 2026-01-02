@@ -27,8 +27,7 @@
 }
 
 #lc-ai-box.expanded {
-  max-height: 70vh;
-  /* 👈 expands ONLY when needed */
+  max-height: 70vh; /* 👈 expands only when tool sections opened */
 }
 
 
@@ -106,14 +105,20 @@
 
 /* output area - scrollable */
 #lc-output {
-  flex: 1;
-  overflow-y: auto;
+  flex: none;                /* explicit: never grow */
   background: #fafafa;
   padding: 10px;
   border-radius: 8px;
   font-size: 13px;
   line-height: 1.5;
-  white-space: pre-wrap;
+
+  pointer-events: none;
+  opacity: 0.7;
+  transition: opacity 0.25s ease;
+}
+
+#lc-output.faded {
+  opacity: 0.2;
 }
 
 /* scratch / small controls row */

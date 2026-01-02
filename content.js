@@ -27,14 +27,13 @@
         <button id="btn-quickref" class="small-btn secondary">📚 Algorithm Quick Reference</button>
       </div>
 
-      <div id="lc-output">Click a button to generate a concise rephrase.</div>
+      <div id="lc-output">Select a tool for instant insights. ⚡</div>
       <div class="lc-footer">Enter API key: Extensions → Details → Options</div>
       <div class="lc-footer-brand"> Made by <b>Erevos</b> </div>
 
 
     `;
     document.body.appendChild(box);
-    document.getElementById("lc-output").classList.add("hidden");
 
     // Make panel draggable
     function makeDraggable(box, handle) {
@@ -72,6 +71,11 @@
       if (!box || !closeBtn) return;
       closeBtn.addEventListener("click", () => {
         box.classList.add("hidden");
+
+        const placeholder = document.getElementById("lc-output");
+        if (placeholder) {
+          placeholder.style.display = "block";
+        }
       });
     }
 
@@ -236,13 +240,14 @@
     function showOutput(text) {
       const aiBox = document.getElementById("ai-output-float");
       const aiContent = document.getElementById("ai-output-content");
-      const panel = document.getElementById("lc-ai-box");
+      const placeholder = document.getElementById("lc-output");
 
       aiContent.innerHTML = mdToHtml(text);
       aiBox.classList.remove("hidden"); // show floating AI box
 
-      // keep main panel clean
-      panel.classList.remove("expanded");
+      if (placeholder) {
+        placeholder.style.display = "none"; // 🔑 fade hint
+      }
     }
 
 
