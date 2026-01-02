@@ -35,6 +35,29 @@
     `;
     document.body.appendChild(box);
 
+    // Make panel draggable
+    function makeDraggable(box, handle) {
+      let isDragging = false;
+      let offsetX = 0;
+      let offsetY = 0;
+
+      handle.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        offsetX = e.clientX - box.offsetLeft;
+        offsetY = e.clientY - box.offsetTop;
+      });
+
+      document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        box.style.left = e.clientX - offsetX + "px";
+        box.style.top = e.clientY - offsetY + "px";
+      });
+
+      document.addEventListener("mouseup", () => {
+        isDragging = false;
+      });
+    }
+
     // ---- Floating Scratchpad ----
     const scratchFloat = document.createElement("div");
     scratchFloat.id = "scratch-float";
@@ -172,24 +195,20 @@
     };
 
     // Drag logic for scratchpad
-    const header = document.getElementById("scratch-header");
-    let isDragging = false, offsetX = 0, offsetY = 0;
+    const scratchHeader = scratchBox.querySelector(".scratch-header");
+    makeDraggable(scratchBox, scratchHeader);
 
-    header.onmousedown = (e) => {
-      isDragging = true;
-      offsetX = e.clientX - scratchBox.offsetLeft;
-      offsetY = e.clientY - scratchBox.offsetTop;
-    };
+    // Drag logic for Ai output box panel
+    const aiBox = document.getElementById("ai-output-float");
+    const aiHeader = aiBox.querySelector(".ai-header");
+    makeDraggable(aiBox, aiHeader);
 
-    document.onmousemove = (e) => {
-      if (!isDragging) return;
-      scratchBox.style.left = e.clientX - offsetX + "px";
-      scratchBox.style.top = e.clientY - offsetY + "px";
-    };
+    // Drag logic for main panel
+    const panel = document.getElementById("lc-ai-box");
+    const panelHeader = panel.querySelector(".lc-header");
+    makeDraggable(panel, panelHeader);
 
-    document.onmouseup = () => {
-      isDragging = false;
-    };
+
 
 
     // Identify problem description with multiple fallbacks
