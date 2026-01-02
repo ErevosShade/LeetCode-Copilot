@@ -67,6 +67,20 @@
       });
     });
 
+    // ---- Floating AI Output Box ----
+    const aiFloat = document.createElement("div");
+    aiFloat.id = "ai-output-float";
+    aiFloat.classList.add("hidden"); // hidden by default
+
+    aiFloat.innerHTML = `
+      <div class="ai-header">
+        🤖 AI Response
+        <button id="ai-close">✕</button>
+      </div>
+      <div id="ai-output-content">Waiting for AI response...</div>
+    `;
+    document.body.appendChild(aiFloat);
+
     // Back button
     const out = document.getElementById("lc-output");
 
