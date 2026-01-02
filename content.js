@@ -7,10 +7,15 @@
     box.id = "lc-ai-box";
     box.innerHTML = `
       <div class="lc-header">
-        <div class="lc-title">LeetCode Copilot</div>
-        <button id="lc-collapse" title="Collapse">✕</button>
+        <div class="lc-title-wrap">
+          <span class="lc-title">
+            <span class="lc-icon">🤖</span>
+            LeetCode Copilot
+          </span>
+          <span class="lc-by">BY EREVOS</span>
+        </div>
+        <button id="lc-collapse" aria-label="Close" ></button>
       </div>
-
       <button id="btn-problem-understanding" class="section-toggle">🧠 Problem Understanding</button>
 
       <div id="problem-understanding-panel" class="section-content">
