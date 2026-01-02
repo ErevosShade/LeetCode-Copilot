@@ -61,8 +61,19 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       // rphrase      
       if (msg.type === "REPHRASE") {
         const prompt = `
-Rephrase the following LeetCode problem in simple, beginner-friendly English in 2 sentences.
-Do NOT include approach, steps, complexity, or edge cases.
+Rephrase the following LeetCode problem in SIMPLE English.
+
+STRICT RULES:
+- Use 1 to 3 short sentences
+- Keep it under 45 words total
+- No explanations
+- No algorithm or approach
+- No edge cases
+- Plain beginner-friendly language only
+
+Problem:
+${text}
+
 
 Problem:
 ${text}
@@ -77,8 +88,13 @@ ${text}
       // -----------------------
       if (msg.type === "CONSTRAINTS") {
         const prompt = `
-Extract ONLY the constraints from this LeetCode problem.
-Return short bullet points, no extra wording.
+Extract ONLY the constraints from the following LeetCode problem.
+
+STRICT RULES:
+- Bullet points only
+- Maximum 6 bullets
+- Do not add or infer anything
+- No explanations or extra text
 
 Problem:
 ${text}
@@ -90,8 +106,13 @@ ${text}
       // Edgecases
       if (msg.type === "EDGECASES") {
         const prompt = `
-List exactly 4 relevant edge cases for this LeetCode problem.
-Return bullet points only.
+List important edge cases for this problem.
+
+STRICT RULES:
+- Bullet points only
+- One short line per bullet
+- No explanations
+- No solutions or hints
 
 Problem:
 ${text}
@@ -104,9 +125,15 @@ ${text}
       // Socratic hints 
 
       if (msg.type === "HINTS") {
-        const prompt = `Give a Socratic-style guided hint for this LeetCode problem.
-❗ DO NOT reveal the solution.
-Ask 2–3 leading questions that help the student think.
+        const prompt = `
+Give Socratic-style hints to help a student think through this problem.
+
+RULES:
+- Ask 2 to 3 guiding questions
+- Do NOT reveal the solution
+- Do NOT mention specific code
+- Encourage logical reasoning
+- Use short, clear paragraphs
 
 Problem:
 ${text}
@@ -121,14 +148,20 @@ ${text}
 
       if(msg.type === "QUICKREF") {
         const prompt = `
-Give a short algorithm/data-structure reference relevant to this LeetCode problem.
-Include:
-• What algorithm fits best
-• One-line explanation
-• Time Complexity
-• Space Complexity
+Provide a concise algorithm reference for this problem.
 
-Keep it concise.
+Include:
+- Best-fit algorithm or pattern
+- Why it fits this problem
+- Time complexity
+- Space complexity
+
+RULES:
+- Use clear headings or bullet points
+- Be concise and structured
+- Avoid long explanations
+- No code
+
 Problem:
 ${text}
 `;
