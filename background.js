@@ -4,6 +4,9 @@ chrome.runtime.onMessage.addListener((msg) => {
   }
 });
 
+const DEFAULT_MODEL = "gemini-flash-latest"; 
+// Fast, cheap, and available for all Gemini API keys
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   console.log("MSG:", msg?.type);
 
@@ -21,7 +24,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     async function callGeminiAPI(prompt, retry = false) {
       try {
         const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${gemini_key}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/${DEFAULT_MODEL}:generateContent?key=${gemini_key}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
