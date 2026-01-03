@@ -211,6 +211,49 @@
   margin-top: auto;
 }
 
+/* API status line */
+#lc-api-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+
+  color: #6b7280;          /* neutral gray */
+  user-select: none;
+}
+
+/* Connected state */
+#lc-api-status.connected {
+  color: #16a34a;          /* calm green */
+}
+
+/* Not connected state */
+#lc-api-status.disconnected {
+  color: #f59e0b;          /* soft amber, not error red */
+}
+
+/* Add API key button */
+#lc-api-status button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 4px;
+
+  font-size: 12px;
+  font-weight: 600;
+  color: #4f46e5;
+  cursor: pointer;
+}
+
+#lc-api-status button:hover {
+  text-decoration: underline;
+}
+
+/* Floating Chat Bubble */
 #lc-bubble {
   position: fixed;
   bottom: 20px;

@@ -33,7 +33,7 @@
       </div>
 
       <div id="lc-output">Choose a tool to break down the problem faster⚡</div>
-      <div class="lc-footer">Enter API key: Extensions → Details → Options</div>
+      <div class="lc-footer" id="lc-api-status"></div>
       <div class="lc-footer-brand" id="lc-version"></div>
 
 
@@ -291,6 +291,43 @@
       send("QUICKREF", "Loading algorithm reference…");
   }
 
+  function updateApiStatus() {
+    chrome.storage.sync.get(["gemini_key"], (res) => {
+      const footer = document.getElementById("lc-api-status");
+      if (!footer) return;
+
+      if (res.gemini_key) {
+        footer.className = "lc-footer connected";
+        footer.textContent = "API CONNECTED ✅";
+      } else {
+        footer.className = "lc-footer disconnected";
+        footer.innerHTML = `
+    API NOT CONNECTED ❌
+    <button id="open-options">Add API Key</button>
+  `;
+
+        document.getElementById("open-options").onclick = (e) => {
+          e.stopPropagation();
+          try {
+            chrome.runtime.sendMessage({ type: "OPEN_OPTIONS" });
+          } catch (err) {
+            console.warn("Extension context lost, retry after reload.");
+          }
+
+        };
+      }
+    });
+  }
+
+  // initial check
+  updateApiStatus();
+
+  //listen for storage changes
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === "sync" && changes.gemini_key) {
+      updateApiStatus();
+    }
+  });
 
   //store last url
   let lastUrl = location.href;
@@ -311,6 +348,9 @@
     subtree: true
   });
 
+
+
   //initial load
   injectPanel();
+
 })();

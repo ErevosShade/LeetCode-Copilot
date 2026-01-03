@@ -1,3 +1,9 @@
+chrome.runtime.onMessage.addListener((msg) => {
+  if (msg.type === "OPEN_OPTIONS") {
+    chrome.runtime.openOptionsPage();
+  }
+});
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   console.log("MSG:", msg?.type);
 
@@ -148,19 +154,24 @@ ${text}
 
       if(msg.type === "QUICKREF") {
         const prompt = `
-Provide a concise algorithm reference for this problem.
+Give an Algorithm Quick Reference for this problem.
 
-Include:
-- Best-fit algorithm or pattern
-- Why it fits this problem
-- Time complexity
-- Space complexity
+FORMAT RULES:
+- Keep it concise and scannable
+- No tables
+- Use headings and bullet points only
+- Assume the reader is actively coding
 
-RULES:
-- Use clear headings or bullet points
-- Be concise and structured
-- Avoid long explanations
-- No code
+INCLUDE:
+1. Optimal algorithm / pattern
+2. Time & space complexity
+3. Why this is optimal (1 short line)
+4. Key steps (3–5 bullets max)
+
+
+Do NOT include code.
+Do NOT over-explain.
+Do NOT mention brute force unless it is the only approach.
 
 Problem:
 ${text}
