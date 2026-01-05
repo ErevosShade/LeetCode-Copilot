@@ -1,13 +1,13 @@
-chrome.runtime.onMessage.addListener((msg) => {
-  if (msg.type === "OPEN_OPTIONS") {
-    chrome.runtime.openOptionsPage();
-  }
-});
-
 const DEFAULT_MODEL = "gemini-flash-latest"; 
 // Fast, cheap, and available for all Gemini API keys
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+
+  if (msg.type === "OPEN_OPTIONS") {
+    chrome.runtime.openOptionsPage();
+    return; // no async work, exit early
+  }
+
   console.log("MSG:", msg?.type);
 
   const text = msg.text || "";
@@ -82,10 +82,6 @@ STRICT RULES:
 
 Problem:
 ${text}
-
-
-Problem:
-${text}
 `;
         const result = await callGeminiAPI(prompt);
         sendResponse({ ok: result.ok, summary: result.text });
@@ -142,7 +138,7 @@ RULES:
 - Do NOT reveal the solution
 - Do NOT mention specific code
 - Encourage logical reasoning
-- Use short, clear paragraphs
+- Use short, clear paragraphs [no bullet points]
 
 Problem:
 ${text}

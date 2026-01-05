@@ -35,8 +35,6 @@
       <div id="lc-output">Choose a tool to break down the problem faster⚡</div>
       <div class="lc-footer" id="lc-api-status"></div>
       <div class="lc-footer-brand" id="lc-version"></div>
-
-
     `;
     document.body.appendChild(box);
 
@@ -209,7 +207,6 @@
     const panelHeader = panel.querySelector(".lc-header");
     makeDraggable(panel, panelHeader);
 
-
     // Identify problem description with multiple fallbacks
     function getProblem() {
       const selectors = [
@@ -347,8 +344,6 @@
     childList: true,
     subtree: true
   });
-
-
 
   //initial load
   injectPanel();

@@ -109,3 +109,51 @@ footer {
   font-size: 12px;
   color: #6b7280;
 }
+
+/* Dark Mode (Options Page) */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #0f172a;
+    color: #e5e7eb;
+  }
+
+  .header h1 {
+    color: #f8fafc;
+  }
+
+  .subtitle {
+    color: #94a3b8;
+  }
+
+  .card {
+    background: #020617;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7);
+  }
+
+  label {
+    color: #e5e7eb;
+  }
+
+  input {
+    background: #020617;
+    border: 1px solid #334155;
+    color: #e5e7eb;
+  }
+
+  input::placeholder {
+    color: #64748b;
+  }
+
+  .hint,
+  footer {
+    color: #94a3b8;
+  }
+
+  button {
+    background: #4f46e5;
+  }
+
+  button:hover {
+    background: #6366f1;
+  }
+}
