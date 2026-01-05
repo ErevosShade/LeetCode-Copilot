@@ -2,9 +2,6 @@
   display: none !important;
 }
 
-/* Basic styles for LeetCode AI panel
-   Just making it look decent on the right side of the screen. */
-
 #lc-ai-box {
   position: fixed;
   top: 62px;
@@ -33,12 +30,12 @@
 }
 
 #lc-ai-box.expanded {
-  max-height: 70vh;
-  /* expands when sections opened*/
+  max-height: 70vh; /* expands when sections opened*/
 }
 
 /* Header container */
 .lc-header {
+  padding: 10px 12px;
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 8px;
@@ -106,6 +103,11 @@
   color: #111827;
 }
 
+#lc-collapse:focus-visible {
+  outline: 2px solid #6366f1;
+  border-radius: 4px;
+}
+
 /* Section toggle button */
 .section-toggle {
   width: 100%;
@@ -116,10 +118,13 @@
   background: #f3f4f6;
   text-align: left;
   font-weight: 600;
+  transition: background 0.2s ease, transform 0.15s ease;
 }
 
 .section-toggle:hover {
   background: #eef2ff;
+  transform: translateY(-1px);
+  
 }
 
 .section-toggle.active {
@@ -130,8 +135,7 @@
 
 /* Controls area (buttons inside expanded section) */
 .section-content {
-  display: none;
-  /* 🔑 remove from flex layout */
+  display: none; /* remove from flex layout */
   flex-direction: column;
   pointer-events: none;
   gap: 6px;
@@ -139,8 +143,7 @@
 }
 
 .section-content.show {
-  display: flex;
-  /* 🔑 reinsert into layout */
+  display: flex; /* reinsert into layout */
   opacity: 1;
   pointer-events: auto;
   transition: opacity 0.2s ease;
@@ -149,6 +152,7 @@
 .small-btn {
   padding: 7px 8px;
   width: 100%;
+  font-weight: 600;
   border-radius: 6px;
   border: none;
   cursor: pointer;
@@ -158,6 +162,7 @@
 }
 
 .small-btn.secondary {
+  font-weight: 500;
   background: #eef2ff;
   color: #1f2937;
 }
@@ -186,12 +191,12 @@
   font-size: 12px;
   color: #6b7280;
   text-align: center;
-  margin-top: 6px;
+  margin-top: auto;
 }
 
 .lc-footer-brand {
   font-size: 12px;
-  opacity: 0.7;
+  opacity: 0.55;
   text-align: center;
   margin-top: auto;
 }
@@ -207,7 +212,7 @@
   font-weight: 600;
   letter-spacing: 0.02em;
 
-  color: #6b7280;          /* neutral gray */
+  color: #6b7280;          
   user-select: none;
 }
 
@@ -218,7 +223,7 @@
 
 /* Not connected state */
 #lc-api-status.disconnected {
-  color: #f59e0b;          /* soft amber, not error red */
+  color: #f59e0b;          /* soft amber */
 }
 
 /* Add API key button */
