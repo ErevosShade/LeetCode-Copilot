@@ -1,127 +1,165 @@
-🚀 LeetCode Copilot — Chrome Extension
-An AI-powered productivity tool for LeetCode, built by Erevos
+# 🤖 LeetCode Copilot
 
-A lightweight Chrome extension that enhances your LeetCode workflow using Gemini AI.
-Understand problems faster, extract constraints, generate hints, save notes, and access algorithm references — all directly beside the problem.
+**LeetCode Copilot** is a Chrome extension that lives directly inside LeetCode problem pages and helps with the *thinking* part of problem-solving — without taking you away from the editor.
 
-✨ Features
-🤖 AI Problem Understanding
+Originally built for the **IEEE LEAD 6.0** event (and winner 🏆), the project has been further refined based on real-world DSA practice and daily use.
 
-Rephrase complex LeetCode problems into simple English
+---
 
-Extract constraints directly from the problem description
+## ✨ Features
 
-Suggest meaningful edge cases
+- 🔍 **Problem Rephrasing**  
+  Converts complex problem statements into simpler, human-readable explanations.
 
-Markdown-like formatting is converted into clean UI-friendly HTML
+- 📏 **Constraint Extraction**  
+  Automatically highlights important constraints and limits.
 
-📘 Workspace Tools
-📝 Scratchpad (Auto-Save per Problem)
+- 🧠 **Edge Case Suggestions**  
+  Helps identify tricky cases that are easy to miss.
 
-Persistent notes for every problem
+- 📝 **Workspace Tools**  
+  Includes a scratchpad, hints, and quick references for structured thinking.
 
-Automatically saved locally using chrome.storage.local
+- 🌗 **Dark & Light Mode Support**  
+  Seamlessly adapts to your LeetCode theme.
 
-Notes reload instantly when revisiting the same problem
+- 🫧 **Minimizable Floating Panel**  
+  Can collapse into a small bubble so it never gets in the way while coding.
 
-💡 Socratic Hint System
+- 🔐 **Privacy-First Design**  
+  Uses your personal **Google Gemini API key**, stored locally and never shared.
 
-Get step-by-step, interactive hints without revealing the full solution
+---
 
-Designed to teach reasoning, not spoon-feed answers
+## 🧠 Why LeetCode Copilot?
 
-📚 Algorithm Quick Reference
+While practicing DSA, it’s easy to jump straight into coding and debug blindly.
 
-One-click lookup:
+LeetCode Copilot is designed to:
+- Encourage clarity before implementation
+- Reduce cognitive load
+- Keep everything inside the problem page
 
-Two pointers
+No tab switching.  
+No copy-paste chaos.  
+Just **think → solve → iterate**.
 
-DP patterns
+---
 
-Sliding window
+## 🛠 Tech Stack
 
-Graph/Tree templates
+- **JavaScript** (DOM-heavy, dynamic UI injection)
+- **Chrome Extensions API**
+- **HTML / CSS**
+- Event-driven UI state management and clean UX
 
-Search strategies
+Tested on:
+- ✅ macOS
+- ✅ Windows
 
-All powered through Gemini prompts
+---
 
-🎨 UI/UX Features
+## 🔑 API Key Setup (Gemini)
 
-Smooth collapsing animations
+LeetCode Copilot uses the **Google Gemini API** for generating AI-powered insights.
 
-“💡” bubble mode when minimized
+### How to add your API key:
 
-Back button to return to the main menu
+1. Get a Gemini API key from:  
+   https://aistudio.google.com/app/api-keys
 
-Clean modern panel styled to match LeetCode’s UI
+2. Open Chrome and navigate to:
+   chrome://extensions
 
-Your name Erevos displayed as the extension’s maker
+3. Find **LeetCode Copilot** → Click **Details**
 
-🔧 Installation (Developer Mode)
+4. Click **Extension options**
 
-Download or clone this repository:
+5. Paste your **Gemini API key** and save
 
-git clone https://github.com/<your-username>/leetcode-copilot
+Once saved, the extension will automatically use the key on LeetCode problem pages.
+
+### 🔐 Privacy Note
+- Your API key is stored **locally** in your browser
+- It is **never sent to any external server**
+- All API calls are made directly from the client
+
+---
+
+## ⚙️ Installation (Local)
+
+1. Clone the repository:
+```bash
+git clone https://github.com/ErevosShade/LeetCode-Copilot.git
+```
+
+2.Open Chrome and go to:
+  chrome://extensions
+3.Enable Developer mode
+
+4.Click Load unpacked
+
+5.Select the project folder
+The extension will now appear on LeetCode problem pages.
+
+---
+
+## 🧪 Usage
+
+1. Add your Gemini API key via the extension options
+2. Open any LeetCode problem
+3. The Copilot panel appears on the right
+4. Choose a tool:
+   - Rephrase problem
+   - Extract constraints
+   - Generate edge cases
+5. Use workspace tools while solving
+6. Minimize the panel when not needed
+
+---
+
+## 📸 Screenshots
+
+The project includes:
+
+- Main panel in dark & light mode
+- AI response in action
+- Workspace tools during problem-solving
+- Secure API setup flow
+- Minimized floating bubble view
+
+(See screenshots in the repository or LinkedIn post.)
+
+---
+
+## 🏆 Acknowledgements
+
+- Built for the **IEEE LEAD 6.0** event
+- Winner of the event 🏆
+- Refined post-event through continuous personal use
+
+---
+
+## 🚧 Future Improvements
+
+- Keyboard shortcuts
+- Better response streaming
+- Offline scratchpad persistence
+- Custom prompt tuning
+- Optional model switching
+
+---
+
+## 📌 Project Status
+
+This project is under **active refinement**.  
+Feedback, issues, and suggestions are welcome.
+
+---
+
+## 👋 Author
+
+Built by **Erevos**  
+Dev logs and progress updates under **#ErevosLogs**
 
 
-Open chrome://extensions/
-
-Enable Developer Mode
-
-Click Load Unpacked
-
-Select the project folder
-
-Open the extension Options page and paste your Gemini API Key
-
-🧠 How It Works
-On every LeetCode problem page:
-
-The extension injects a floating panel
-
-Detects problem description using multiple DOM selectors
-
-Converts AI outputs → clean HTML (safe, sanitized)
-
-All actions communicate with background.js using chrome.runtime.sendMessage
-
-Background Tasks
-
-background.js handles:
-
-Fetching from Gemini API
-
-Retry logic + failure-friendly messaging
-
-Returning summaries, hints, algorithm notes, etc.
-
-📁 Project Structure
-📦 leetcode-copilot
- ┣ 📜 manifest.json
- ┣ 📜 background.js
- ┣ 📜 content.js
- ┣ 📜 styles.css
- ┣ 📜 options.html
- ┣ 📜 options.js
- ┗ 📜 README.md
-
-🖥️ Screenshots (Replace With Your Images)
-Main Panel
-
-Bubble Mode
-
-Scratchpad
-
-🔐 API Key Storage
-
-Your Gemini key stays local
-
-Never exposed publicly
-
-Stored only in chrome.storage.sync
-
-👤 Author
-Made with ❤️ by Erevos
-
-If you like this extension, ⭐ the repo or contribute!
